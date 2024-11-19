@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlueVelvet Music Store</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1 id="welcome-message">Login to BlueVelvet Music Store</h1>
+
+        <!-- Formulário de Login -->
+        <div id="login-form-container">
+            <form id="login-form">
+                <label for="email">E-mail address:</label>
+                <input type="email" id="email" required placeholder="Enter your e-mail" class="wide-input" />
+                
+                <label for="password">Password:</label>
+                <input type="password" id="password" placeholder="Enter your Password" />
+
+                <div>
+                    <input type="checkbox" id="remember-me">
+                    <label for="remember-me">Remember me</label>
+                </div>
+
+                <div id="error-message" style="color: red; display: none;">
+                    <p>Incorrect email or password. Please try again.</p>
+                </div>
+
+                <button type="submit">Log in</button>
+            </form>
+        </div>
+
+        <p id="register-link">Don't have an account? <a href="register.html">Register</a></p>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

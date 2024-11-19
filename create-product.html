@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Product - BlueVelvet Music Store</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>BlueVelvet Music Store</h1>
+        <h2>Add Product</h2>
+
+        <form id="createProductForm">
+            <input type="text" id="name" placeholder="Product Name" required>
+            <textarea id="shortDescription" placeholder="Short Description" required></textarea>
+            <textarea id="fullDescription" placeholder="Full Description" required></textarea>
+            <input type="text" id="brand" placeholder="Brand" required>
+            <input type="text" id="category" placeholder="Category" required>
+            <input type="file" id="mainImage" accept="image/*" required>
+            <input type="number" id="listPrice" placeholder="List Price" step="0.01" required>
+            <input type="number" id="discountPercent" placeholder="Discount Percent" min="0" max="100" required>
+            <label>
+                <input type="checkbox" id="enabled"> Enabled
+            </label>
+            <label>
+                <input type="checkbox" id="inStock"> In Stock
+            </label>
+            <input type="number" id="length" placeholder="Length (inches)" step="0.01" required>
+            <input type="number" id="width" placeholder="Width (inches)" step="0.01" required>
+            <input type="number" id="height" placeholder="Height (inches)" step="0.01" required>
+            <input type="number" id="weight" placeholder="Weight (pounds)" step="0.01" required>
+            <input type="number" id="cost" placeholder="Cost" step="0.01" required>
+
+            <button type="submit">Add Product</button>
+        </form>
+        <a href="dashboard.html" class="btn-back">Back to Dashboard</a>
+    </div>
+
+    <script>
+        // Função para converter a imagem para base64
+        function convertImageToBase64(file, callback) {
+            const reader = new FileReader();
+            reader.onloadend = function () {
+                callback(reader.result);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        document.getElementById('createProductForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Verificando se o arquivo de imagem foi selecionado
+            const imageFile = document.getElementById('mainImage').files[0];
+            if (!imageFile) {
+                alert("Please select an image.");
+                return;
+            }
+
+            // Convertendo a imagem para base64 antes de salvar
+            convertImageToBase64(imageFile, function(base64Image) {
+                const product = {
+                    id: Date.now(),  // Gerando um ID único com base no timestamp
+                    name: document.getElementById('name').value,
+                    shortDescription: document.getElementById('shortDescription').value,
+                    fullDescription: document.getElementById('fullDescription').value,
+                    brand: document.getElementById('brand').value,
+                    category: document.getElementById('category').value,
+                    mainImage: base64Image,  // Armazenando a imagem como base64
+                    listPrice: parseFloat(document.getElementById('listPrice').value),
+                    discountPercent: parseFloat(document.getElementById('discountPercent').value),
+                    enabled: document.getElementById('enabled').checked,
+                    inStock: document.getElementById('inStock').checked,
+                    length: parseFloat(document.getElementById('length').value),
+                    width: parseFloat(document.getElementById('width').value),
+                    height: parseFloat(document.getElementById('height').value),
+                    weight: parseFloat(document.getElementById('weight').value),
+                    cost: parseFloat(document.getElementById('cost').value),
+                };
+
+                // Armazenando o produto no localStorage
+                const products = JSON.parse(localStorage.getItem('products')) || [];
+                products.push(product);
+                localStorage.setItem('products', JSON.stringify(products));
+
+                alert('Product added successfully!');
+                window.location.href = 'dashboard.html';  // Redireciona para a página de dashboard
+            });
+        });
+    </script>
+</body>
+</html>
+

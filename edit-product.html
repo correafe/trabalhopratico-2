@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Product - BlueVelvet Music Store</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>BlueVelvet Music Store</h1>
+        <h2>Edit Product</h2>
+
+        <form id="editProductForm">
+            <input type="text" id="name" placeholder="Product Name" required>
+            <textarea id="shortDescription" placeholder="Short Description" required></textarea>
+            <textarea id="fullDescription" placeholder="Full Description" required></textarea>
+            <input type="text" id="brand" placeholder="Brand" required>
+            <input type="text" id="category" placeholder="Category" required>
+            <input type="file" id="mainImage" accept="image/*">
+            <input type="number" id="listPrice" placeholder="List Price" step="0.01" required>
+            <input type="number" id="discountPercent" placeholder="Discount Percent" min="0" max="100" required>
+            <label>
+                <input type="checkbox" id="enabled"> Enabled
+            </label>
+            <label>
+                <input type="checkbox" id="inStock"> In Stock
+            </label>
+            <input type="number" id="length" placeholder="Length (inches)" step="0.01" required>
+            <input type="number" id="width" placeholder="Width (inches)" step="0.01" required>
+            <input type="number" id="height" placeholder="Height (inches)" step="0.01" required>
+            <input type="number" id="weight" placeholder="Weight (pounds)" step="0.01" required>
+            <input type="number" id="cost" placeholder="Cost" step="0.01" required>
+
+            <button type="submit">Save Changes</button>
+        </form>
+        <a href="dashboard.html" class="btn-back">Back to Dashboard</a>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Obtendo o ID do produto da URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = parseInt(urlParams.get('id'), 10);
+
+            const products = JSON.parse(localStorage.getItem('products')) || [];
+            const product = products.find(p => p.id === productId);
+
+            if (product) {
+                // Preenchendo o formulário com os dados do produto
+                document.getElementById('name').value = product.name;
+                document.getElementById('shortDescription').value = product.shortDescription;
+                document.getElementById('fullDescription').value = product.fullDescription;
+                document.getElementById('brand').value = product.brand;
+                document.getElementById('category').value = product.category;
+                document.getElementById('listPrice').value = product.listPrice;
+                document.getElementById('discountPercent').value = product.discountPercent;
+                document.getElementById('enabled').checked = product.enabled;
+                document.getElementById('inStock').checked = product.inStock;
+                document.getElementById('length').value = product.length;
+                document.getElementById('width').value = product.width;
+                document.getElementById('height').value = product.height;
+                document.getElementById('weight').value = product.weight;
+                document.getElementById('cost').value = product.cost;
+            }
+        });
+
+        // Salvar alterações no produto
+        document.getElementById('editProductForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = parseInt(urlParams.get('id'), 10);
+
+            const products = JSON.parse(localStorage.getItem('products')) || [];
+            const productIndex = products.findIndex(p => p.id === productId);
+
+            if (productIndex !== -1) {
+                // Atualizando os dados do produto
+                products[productIndex] = {
+                    ...products[productIndex],
+                    name: document.getElementById('name').value,
+                    shortDescription: document.getElementById('shortDescription').value,
+                    fullDescription: document.getElementById('fullDescription').value,
+                    brand: document.getElementById('brand').value,
+                    category: document.getElementById('category').value,
+                    listPrice: parseFloat(document.getElementById('listPrice').value),
+                    discountPercent: parseFloat(document.getElementById('discountPercent').value),
+                    enabled: document.getElementById('enabled').checked,
+                    inStock: document.getElementById('inStock').checked,
+                    length: parseFloat(document.getElementById('length').value),
+                    width: parseFloat(document.getElementById('width').value),
+                    height: parseFloat(document.getElementById('height').value),
+                    weight: parseFloat(document.getElementById('weight').value),
+                    cost: parseFloat(document.getElementById('cost').value),
+                };
+
+                // Salvando de volta no localStorage
+                localStorage.setItem('products', JSON.stringify(products));
+
+                // Redirecionando para o dashboard
+                window.location.href = 'dashboard.html';
+            }
+        });
+    </script>
+</body>
+</html>
+

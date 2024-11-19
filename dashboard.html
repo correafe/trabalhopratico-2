@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - BlueVelvet Music Store</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>BlueVelvet Music Store</h1>
+        <h2>Product Management</h2>
+
+        <div id="welcome-message">
+            Welcome, <span id="username"></span> (<span id="userRole"></span>)
+            <button id="logoutBtn">Logout</button>
+        </div>
+
+        <div id="productControls">
+            <button id="resetProductsBtn">Reset Products to Initial State</button>
+            <a href="create-product.html"><button id="addProductBtn">Add Product</button></a>
+            <input type="text" id="searchInput" placeholder="Search products...">
+            <select id="sortSelect">
+                <option value="name">Sort by Name</option>
+                <option value="id">Sort by ID</option>
+                <option value="brand">Sort by Brand</option>
+                <option value="category">Sort by Category</option>
+            </select>
+        </div>
+
+        <div id="paginationControls">
+            <button id="firstPageBtn">First</button>
+            <button id="prevPageBtn">Previous</button>
+            <span id="currentPage">1</span> / <span id="totalPages">1</span>
+            <button id="nextPageBtn">Next</button>
+            <button id="lastPageBtn">Last</button>
+        </div>
+
+        <table id="productTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Image</th>
+                    <th>Name</th>
+                    <th>Brand</th>
+                    <th>Category</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="productList">
+                <!-- Os produtos serão carregados aqui dinamicamente com JavaScript -->
+            </tbody>
+        </table>
+
+        <div id="pagination">
+            <button>First</button>
+            <button>2</button>
+            <button>3</button>
+            <button>4</button>
+            <button>Last</button>
+        </div>
+
+        <!-- Formulário de Adição de Produto -->
+        <div id="addProductFormContainer" style="display: none;">
+            <h3>Add New Product</h3>
+            <form id="addProductForm">
+                <input type="text" id="productName" placeholder="Product Name" required>
+                <textarea id="shortDescription" placeholder="Short Description" required></textarea>
+                <textarea id="fullDescription" placeholder="Full Description" required></textarea>
+                <input type="text" id="brand" placeholder="Brand" required>
+                <input type="text" id="category" placeholder="Category" required>
+                <input type="file" id="mainImage" accept="image/*">
+                <input type="number" id="listPrice" placeholder="List Price" step="0.01" required>
+                <input type="number" id="discountPercent" placeholder="Discount Percent" min="0" max="100" required>
+                <label>
+                    <input type="checkbox" id="enabled"> Enabled
+                </label>
+                <label>
+                    <input type="checkbox" id="inStock"> In Stock
+                </label>
+                <input type="number" id="length" placeholder="Length (inches)" step="0.01" required>
+                <input type="number" id="width" placeholder="Width (inches)" step="0.01" required>
+                <input type="number" id="height" placeholder="Height (inches)" step="0.01" required>
+                <input type="number" id="weight" placeholder="Weight (pounds)" step="0.01" required>
+                <input type="number" id="cost" placeholder="Cost" step="0.01" required>
+
+                <button type="submit">Add Product</button>
+                <button type="button" id="cancelAddProduct">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const products = JSON.parse(localStorage.getItem('products')) || [];
+        const productList = document.getElementById('productList');
+
+        // Função para exibir produtos corrigida
+        function displayProducts(products) {
+            productList.innerHTML = ''; // Limpa a tabela antes de exibir os produtos
+            products.forEach(product => {
+                const row = document.createElement('tr'); // Cria uma nova linha
+                row.innerHTML = `
+                    <td>${product.id}</td>
+                    <td><img src="${product.mainImage || 'default-image.jpg'}" alt="${product.name}" style="width: 100px; height: 100px;"></td>
+                    <td>${product.name}</td>
+                    <td>${product.brand}</td>
+                    <td>${product.category}</td>
+                    <td>
+                        <button class="viewBtn" data-id="${product.id}">View</button>
+                        <button class="editBtn" data-id="${product.id}">Edit</button>
+                        <button class="deleteBtn" data-id="${product.id}">Delete</button>
+                    </td>`;
+                productList.appendChild(row);
+            });
+        }
+
+        // Adicionar eventos para botões
+        function addEventListeners() {
+            document.addEventListener('click', (event) => {
+    if (event.target.classList.contains('viewBtn')) {
+        const productId = event.target.getAttribute('data-id');
+        const selectedProduct = products.find(product => product.id == productId);
+        if (selectedProduct) {
+            localStorage.setItem('selectedProduct', JSON.stringify(selectedProduct));
+            window.location.href = 'view-product.html';
+        } else {
+            alert("Produto não encontrado!");
+        }
+    }
+
+                // Editar Produto
+                if (event.target.classList.contains('editBtn')) {
+                    const productId = event.target.getAttribute('data-id');
+                    localStorage.setItem('editProductId', productId);
+                    window.location.href = `edit-product.html?id=${productId}`;
+                }
+
+                // Deletar Produto
+                if (event.target.classList.contains('deleteBtn')) {
+                    const productId = parseInt(event.target.getAttribute('data-id'));
+                    const productIndex = products.findIndex(product => product.id === productId);
+
+                    if (productIndex !== -1) {
+                        const confirmation = confirm("Are you sure you want to delete this product?");
+                        if (confirmation) {
+                            products.splice(productIndex, 1);
+                            localStorage.setItem('products', JSON.stringify(products));
+                            displayProducts(products); // Atualiza a lista de produtos
+                        }
+                    } else {
+                        alert('Product not found.');
+                    }
+                }
+            });
+        }
+
+        // Exibir produtos na inicialização
+        displayProducts(products);
+
+        // Adicionar eventos
+        addEventListeners();
+
+        // Adicionar produto
+        document.getElementById('addProductForm')?.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const product = {
+                id: Date.now(),
+                name: document.getElementById('productName').value,
+                brand: document.getElementById('brand').value,
+                category: document.getElementById('category').value,
+                mainImage: 'images/default.png',
+                enabled: document.getElementById('enabled').checked,
+                inStock: document.getElementById('inStock').checked
+            };
+            products.push(product);
+            localStorage.setItem('products', JSON.stringify(products));
+            alert("Produto adicionado com sucesso!");
+            window.location.href = 'dashboard.html';
+        });
+    });
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>

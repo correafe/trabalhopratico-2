@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" id="view-producttt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details - BlueVelvet Music Store</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Product Details</h1>
+        <div id="productDetails">
+            <div><label>Product ID:</label><span id="product-id"></span></div>
+            <div><label>Product Name:</label><span id="product-name"></span></div>
+            <div><label>Category:</label><span id="category"></span></div>
+            <div><label>Brand:</label><span id="brand"></span></div>
+            <div><label>Main Image:</label><img id="main-image" src="" alt="Product Image" style="width: 100px; height: 100px;" /></div>
+            <div><label>Short Description:</label><span id="short-description"></span></div>
+            <div><label>Full Description:</label><p id="full-description"></p></div>
+            <div><label>List Price:</label><span id="list-price"></span></div>
+            <div><label>Discount:</label><span id="discount"></span></div>
+            <div><label>Enabled:</label><span id="enabled"></span></div>
+            <div><label>In Stock:</label><span id="in-stock"></span></div>
+            <div><label>Creation Time:</label><span id="creation-time"></span></div>
+            <div><label>Update Time:</label><span id="update-time"></span></div>
+            <div><label>Dimensions:</label><span id="dimensions"></span></div>
+            <div><label>Weight:</label><span id="weight"></span></div>
+            <div><label>Cost:</label><span id="cost"></span></div>
+
+            <a href="dashboard.html" class="btn-back">Back to Dashboard</a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const product = JSON.parse(localStorage.getItem('selectedProduct'));
+
+            if (product) {
+                document.getElementById('product-id').textContent = product.id;
+                document.getElementById('product-name').textContent = product.name;
+                document.getElementById('category').textContent = product.category;
+                document.getElementById('brand').textContent = product.brand;
+                document.getElementById('main-image').src = product.mainImage;
+                document.getElementById('short-description').textContent = product.shortDescription;
+                document.getElementById('full-description').textContent = product.fullDescription;
+                document.getElementById('list-price').textContent = `$${product.listPrice.toFixed(2)}`;
+                document.getElementById('discount').textContent = `${product.discountPercent}%`;
+                document.getElementById('enabled').textContent = product.enabled ? 'Yes' : 'No';
+                document.getElementById('in-stock').textContent = product.inStock ? 'Yes' : 'No';
+                document.getElementById('creation-time').textContent = new Date(product.id).toLocaleString();
+                document.getElementById('update-time').textContent = new Date(product.id).toLocaleString(); // Atualizar conforme necessário
+                document.getElementById('dimensions').textContent = `${product.length} x ${product.width} x ${product.height} inches`;
+                document.getElementById('weight').textContent = `${product.weight} lbs`;
+                document.getElementById('cost').textContent = `$${product.cost.toFixed(2)}`;
+            }
+        });
+    </script>
+</body>
+</html>
